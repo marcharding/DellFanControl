@@ -163,8 +163,8 @@ namespace DellFanControl
                 doc.Load(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\config.xml");
                 this.config["pollingInterval"] = Int32.Parse(doc.DocumentElement.Attributes["pollingInterval"].Value);
                 this.config["minCooldownTime"] = Int32.Parse(doc.DocumentElement.Attributes["minCooldownTime"].Value);
-                this.config["fanOneActive"] = this.config["FanOneCPUTemperatureThresholdZero"] = Int32.Parse(doc.DocumentElement.SelectSingleNode("/DellFanCtrl/FanOne").Attributes["active"].Value);
-                this.config["fanTwoActive"] = this.config["FanOneCPUTemperatureThresholdZero"] = Int32.Parse(doc.DocumentElement.SelectSingleNode("/DellFanCtrl/FanOne").Attributes["active"].Value);
+                this.config["fanOneActive"] = Int32.Parse(doc.DocumentElement.SelectSingleNode("/DellFanCtrl/FanOne").Attributes["active"].Value);
+                this.config["fanTwoActive"] = Int32.Parse(doc.DocumentElement.SelectSingleNode("/DellFanCtrl/FanTwo").Attributes["active"].Value);
                 this.config["FanOneCPUTemperatureThresholdZero"] = Int32.Parse(doc.DocumentElement.SelectSingleNode("/DellFanCtrl/FanOne/TemperatureThresholdZero").Attributes["CPU"].Value);
                 this.config["FanOneCPUTemperatureThresholdOne"] = Int32.Parse(doc.DocumentElement.SelectSingleNode("/DellFanCtrl/FanOne/TemperatureThresholdOne").Attributes["CPU"].Value);
                 this.config["FanOneCPUTemperatureThresholdTwo"] = Int32.Parse(doc.DocumentElement.SelectSingleNode("/DellFanCtrl/FanOne/TemperatureThresholdTwo").Attributes["CPU"].Value);
