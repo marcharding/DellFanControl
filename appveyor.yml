@@ -1,0 +1,7 @@
+before_build:
+- cmd: >-
+    dotnet restore
+
+build_script:
+- cmd: >-
+    dotnet build -c Release

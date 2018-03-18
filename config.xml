@@ -1,0 +1,14 @@
+<DellFanCtrl pollingInterval="1000" minCooldownTime="30">
+  <!-- CPU -->
+  <FanOne active="1">
+    <TemperatureThresholdZero CPU="50" GPU="50"/>
+    <TemperatureThresholdOne CPU="60" GPU="60"/>
+    <TemperatureThresholdTwo CPU="70" GPU="70"/> 
+  </FanOne>
+  <!-- GPU -->
+  <FanTwo active="1">
+    <TemperatureThresholdZero CPU="45" GPU="45"/>
+    <TemperatureThresholdOne CPU="55" GPU="55"/>
+    <TemperatureThresholdTwo CPU="65" GPU="65"/>
+  </FanTwo>
+</DellFanCtrl>
