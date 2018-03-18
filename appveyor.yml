@@ -7,4 +7,4 @@ build_script:
     dotnet build -c Release
 
 artifacts:
-  - path: src/Release
+  - path: bin/Release
