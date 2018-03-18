@@ -5,3 +5,6 @@ before_build:
 build_script:
 - cmd: >-
     dotnet build -c Release
+
+artifacts:
+  - path: src/Release
