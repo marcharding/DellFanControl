@@ -32,7 +32,7 @@ namespace DellFanControl
         public const uint DELL_SMM_IO_ENABLE_FAN_CTL2 = 0x35a3;
         public const uint DELL_SMM_IO_NO_ARG = 0x0;
 
-        public void Init()
+        public void Init(DellFanControlApplicationContext context)
         {
             this.hDriver = Interop.CreateFile(
                 @"\\.\BZHDELLSMMIO",
@@ -84,13 +84,6 @@ namespace DellFanControl
                 // BDSID_StartDriver();
             }
 
-            // Console.WriteLine(Interop.GetLastError());
-        }
-
-        public DellFanCtrl(DellFanControlApplicationContext context)
-        {
-            this.Init();
-
             if (context.config["FanOneActive"] == 1)
             {
                 dell_smm_io(DELL_SMM_IO_DISABLE_FAN_CTL1, DELL_SMM_IO_NO_ARG);
@@ -101,9 +94,15 @@ namespace DellFanControl
                 dell_smm_io(DELL_SMM_IO_DISABLE_FAN_CTL2, DELL_SMM_IO_NO_ARG);
             }
 
+            // Console.WriteLine(Interop.GetLastError());
+        }
+
+        public DellFanCtrl(DellFanControlApplicationContext context)
+        {
+            this.Init(context);
+
             uint tempCPU = 0;
             uint tempGPU = 0;
-
             int fanOneLevel = 0;
             int fanTwoLevel = 0;
             int fanDelayTime1 = 0;
@@ -115,7 +114,7 @@ namespace DellFanControl
 
                 if (context.nextAction == (int)Global.ACTION.EXIT)
                 {
-                    context.nextAction = (int)Global.ACTION.NONE;
+                    context.nextAction = (int)Global.ACTION.WAIT;
                     dell_smm_io(DELL_SMM_IO_ENABLE_FAN_CTL1, DELL_SMM_IO_NO_ARG);
                     dell_smm_io(DELL_SMM_IO_ENABLE_FAN_CTL2, DELL_SMM_IO_NO_ARG);
                     break;
@@ -124,26 +123,36 @@ namespace DellFanControl
                 if (context.nextAction == (int)Global.ACTION.ENABLE)
                 {
                     context.nextAction = (int)Global.ACTION.NONE;
-                    this.Init();
                     tempCPU = 0;
+                    tempGPU = 0;
                     fanOneLevel = 0;
+                    fanTwoLevel = 0;
                     fanDelayTime1 = 0;
                     fanDelayTime2 = 0;
+                    this.Init(context);
                 }
 
                 if (context.nextAction == (int)Global.ACTION.RESUME)
                 {
                     context.nextAction = (int)Global.ACTION.NONE;
-                    this.Init();
                     tempCPU = 0;
+                    tempGPU = 0;
                     fanOneLevel = 0;
+                    fanTwoLevel = 0;
                     fanDelayTime1 = 0;
                     fanDelayTime2 = 0;
+                    this.Init(context);
                 }
 
                 if (context.nextAction == (int)Global.ACTION.DISABLE)
                 {
-                    context.nextAction = (int)Global.ACTION.NONE;
+                    context.nextAction = (int)Global.ACTION.WAIT;
+                    tempCPU = 0;
+                    tempGPU = 0;
+                    fanOneLevel = 0;
+                    fanTwoLevel = 0;
+                    fanDelayTime1 = 0;
+                    fanDelayTime2 = 0;
                     dell_smm_io(DELL_SMM_IO_ENABLE_FAN_CTL1, DELL_SMM_IO_NO_ARG);
                     dell_smm_io(DELL_SMM_IO_ENABLE_FAN_CTL2, DELL_SMM_IO_NO_ARG);
                     continue;
@@ -151,7 +160,13 @@ namespace DellFanControl
 
                 if (context.nextAction == (int)Global.ACTION.SUSPEND)
                 {
-                    context.nextAction = (int)Global.ACTION.NONE;
+                    context.nextAction = (int)Global.ACTION.WAIT;
+                    tempCPU = 0;
+                    tempGPU = 0;
+                    fanOneLevel = 0;
+                    fanTwoLevel = 0;
+                    fanDelayTime1 = 0;
+                    fanDelayTime2 = 0;
                     dell_smm_io(DELL_SMM_IO_ENABLE_FAN_CTL1, DELL_SMM_IO_NO_ARG);
                     dell_smm_io(DELL_SMM_IO_ENABLE_FAN_CTL2, DELL_SMM_IO_NO_ARG);
                     continue;
@@ -161,6 +176,11 @@ namespace DellFanControl
                 tempGPU = dell_smm_io_get_gpu_temperature();
 
                 context.trayIcon.Text = "CPU: " + tempCPU.ToString() + "°C" + Environment.NewLine + "GPU: " + tempGPU.ToString() + "°C";
+
+                if (context.nextAction == (int)Global.ACTION.WAIT)
+                {
+                    continue;
+                }
 
                 fanDelayTime1--;
                 fanDelayTime2--;
@@ -223,13 +243,13 @@ namespace DellFanControl
                     fanDelayTime1 = context.config["minCooldownTime"];
                     dell_smm_io_set_fan_lv(DELL_SMM_IO_FAN1, DELL_SMM_IO_FAN_LV1);
                 }
-                
+
                 if (fanOneLevel == 2)
                 {
                     fanDelayTime2 = context.config["minCooldownTime"];
                     dell_smm_io_set_fan_lv(DELL_SMM_IO_FAN1, DELL_SMM_IO_FAN_LV2);
                 }
-               
+
                 // Fan 2
 
                 if (fanTwoLevel == 0 && fanDelayTime1 == 0)
@@ -248,6 +268,7 @@ namespace DellFanControl
                     fanDelayTime2 = context.config["minCooldownTime"];
                     dell_smm_io_set_fan_lv(DELL_SMM_IO_FAN2, DELL_SMM_IO_FAN_LV2);
                 }
+
             }
 
             Interop.CloseHandle(this.hDriver);

@@ -20,7 +20,8 @@ namespace DellFanControl
             DISABLE = 3,
             SUSPEND = 5,
             RESUME = 7,
-            EXIT = 9
+            EXIT = 9,
+            WAIT = 10
         }
 
     }
