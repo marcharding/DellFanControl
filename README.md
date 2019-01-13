@@ -33,7 +33,7 @@ sc delete BZHDELLSMMIO
 
 ## Default configuration
 
-In the Default configuration the fans kick in when the CPU reaches 55 °C. First the quieter GPU fan will kick in, when 60 °C are reached the CPU fan kicks in too.
+In the default configuration the fans kick in when the CPU reaches 55 °C. First the quieter GPU fan will kick in, when 60 °C are reached the CPU fan kicks in too.
 
 ```xml
 <DellFanCtrl pollingInterval="1000" minCooldownTime="30">
@@ -51,6 +51,16 @@ In the Default configuration the fans kick in when the CPU reaches 55 °C. First
   </FanTwo>
 </DellFanCtrl>
 ```
+
+## Autostart
+
+To automatically start DellFanControl register it as a scheduled task.
+
+You can find a configuration template in DellFanControl.xml.
+
+If you installed/copied DellFanControl.exe to C:\Program `Files\DellFanControl\DellFanControl.exe` you can just use execute `schtasks.exe /create /tn DellFanControl /XML DellFanControl.xml` to create a suitable scheduled task.
+
+Otherwise call `taskschd.msc`, import DellFanControl.xml and adjust the path.
 
 ## Further Information / Links
 
